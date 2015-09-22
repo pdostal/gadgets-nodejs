@@ -1,6 +1,30 @@
 isEmpty = (str) ->
   !str or str.length == 0 or /^\s*$/.test(str) or !str.trim()
 
+sensorReplace = (str) ->
+  if /^.+AC-82.+$/g.test str
+    str.replace /^.+AC-82.+$/g, 'relay'
+  else if /^.+JA-80L.+$/g.test str
+    str.replace /^.+JA-80L.+$/g, 'siren'
+  else if /^.+AC-88.+$/g.test str
+    str.replace /^.+AC-88.+$/g, 'socket'
+  else if /^.+RC-86K.+$/g.test str
+    str.replace /^.+RC-86K.+$/g, 'control'
+  else if /^.+TP-82N.+$/g.test str
+    str.replace /^.+TP-82N.+$/g, 'thermostat'
+  else if /^.+JA-85ST.+$/g.test str
+    str.replace /^.+JA-85ST.+$/g, 'smokesensor'
+  else if /^.+JA-82SH.+$/g.test str
+    str.replace /^.+JA-82SH.+$/g, 'shakesensor'
+  else if /^.+JA-83M.+$/g.test str
+    str.replace /^.+JA-83M.+$/g, 'magneticsensor'
+  else if /^.+JA-83P.+$/g.test str
+    str.replace /^.+JA-83P.+$/g, 'movementsensor'
+  else if /^.+JA-81M.+$/g.test str
+    str.replace /^.+JA-81M.+$/g, 'universalinterface'
+  else
+    'rpi'
+
 SerialPort = require 'serialport'
 Serialport = SerialPort.SerialPort
 serialport = new Serialport '/dev/ttyUSB0',
@@ -15,26 +39,14 @@ mqtt = Mqtt.connect 'mqtt://test.mosquitto.org'
 
 mqtt.on 'connect', ->
   mqtt.subscribe '/pdostalcz/#'
-  mqtt.publish '/pdostalcz/gadgets', 'Hello MQTT'
 
 mqtt.on 'message', (topic, message) ->
   console.log topic.toString() + ' ' + message.toString()
 
 serialport.on 'data', (data) ->
   if !isEmpty data
-    data = data.replace /^(\[[0-9]+\] )/g, '/dev/ttyUSB0 '
+    sensor = sensorReplace data
+    data = data.replace /(\[[0-9]+\] [A-Z]+-[0-9A-Z]+ )/g, ''
 
-    data = data.replace /AC-82/g, 'relay'
-    data = data.replace /JA-80L/g, 'siren'
-    data = data.replace /AC-88/g, 'powersocket'
-    data = data.replace /RC-86K/g, 'controller'
-    data = data.replace /TP-82N/g, 'thermometer'
-    data = data.replace /JA-85ST/g, 'smokesensor'
-    data = data.replace /JA-82SH/g, 'shakesensor'
-    data = data.replace /JA-83M/g, 'magnetsensor'
-    data = data.replace /JA-83P/g, 'motionsensor'
-    data = data.replace /JA-81M/g, 'interface'
-
-    mqtt.publish '/pdostalcz/gadgets', data
-    console.log data
+    mqtt.publish '/pdostalcz/' + sensor, data
 
