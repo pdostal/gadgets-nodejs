@@ -1,3 +1,5 @@
+moment = require 'moment'
+
 SerialPort = require 'serialport'
 Serialport = SerialPort.SerialPort
 serialport = new Serialport '/dev/ttyUSB0',
@@ -20,6 +22,8 @@ serialport.on 'data', (data) ->
   if /^\[[0-9]+\] [A-Z]+-[0-9A-Z]+ .+$/g.test data
     sensor = data.replace /^\[[0-9]+\] ([A-Z]+-[0-9A-Z]+) .+$/g, '$1'
     data = data.replace /^\[[0-9]+\] [A-Z]+-[0-9A-Z]+ (.+)$/g, '$1'
+    date = moment.utc().format()
 
-    mqtt.publish '/pdostalcz/' + sensor.toLowerCase(), data
+    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/date', date
+    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/data', data
 
