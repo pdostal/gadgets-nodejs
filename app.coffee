@@ -22,9 +22,10 @@ serialport.on 'data', (data) ->
   if /^\[[0-9]+\] [A-Z]+-[0-9A-Z]+ .+$/g.test data
     sensor = data.replace /^\[[0-9]+\] ([A-Z]+-[0-9A-Z]+) .+$/g, '$1'
     message = data.replace /^\[[0-9]+\] [A-Z]+-[0-9A-Z]+ (.+)$/g, '$1'
-    message = message.replace /((INT|SET):[0-9.]+).C/g, '$1C'
+    message = message.replace /(INT:[0-9.]+).C/g, '$1C'
     timestamp = moment.utc().format()
 
-    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/timestamp', timestamp, { retain: true }
-    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/message', message, { retain: true }
+    if sensor != 'TP-82N' || ( sensor == 'TP-82N' && !/^(SET):.+$/g.test message )
+      mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/timestamp', timestamp, { retain: true }
+      mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/message', message, { retain: true }
 
