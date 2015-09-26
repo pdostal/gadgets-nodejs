@@ -1,0 +1,21 @@
+{
+  "name": "serial2mqtt",
+  "main": "app.coffee",
+  "version": "0.0.1",
+  "description": "serial 2 mqtt",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pdostal/serial2mqtt.git"
+  },
+  "dependencies": {
+    "serialport": "1.7.4",
+    "moment": "2.10.6",
+    "mqtt": "1.4.1"
+  }
+  "engines": {
+    "node": ">= 0.12.0"
+  },
+  "devDependencies": {
+    "coffee-script": ">= 1.3"
+  },
+}
