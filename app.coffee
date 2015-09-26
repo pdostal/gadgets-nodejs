@@ -13,17 +13,17 @@ Mqtt = require 'mqtt'
 mqtt = Mqtt.connect 'mqtt://test.mosquitto.org'
 
 mqtt.on 'connect', ->
-  mqtt.subscribe '/pdostalcz/#'
+  mqtt.subscribe '/pdostalcz/+/message'
 
 mqtt.on 'message', (topic, message) ->
-  console.log topic.toString() + ' ' + message.toString()
+  console.log moment().format() + ' ' + topic.toString() + ' ' + message.toString()
 
 serialport.on 'data', (data) ->
   if /^\[[0-9]+\] [A-Z]+-[0-9A-Z]+ .+$/g.test data
     sensor = data.replace /^\[[0-9]+\] ([A-Z]+-[0-9A-Z]+) .+$/g, '$1'
-    data = data.replace /^\[[0-9]+\] [A-Z]+-[0-9A-Z]+ (.+)$/g, '$1'
-    date = moment.utc().format()
+    message = data.replace /^\[[0-9]+\] [A-Z]+-[0-9A-Z]+ (.+)$/g, '$1'
+    timestamp = moment.utc().format()
 
-    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/date', date
-    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/data', data
+    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/timestamp', timestamp
+    mqtt.publish '/pdostalcz/' + sensor.toLowerCase() + '/message', message
 
