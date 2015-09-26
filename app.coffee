@@ -10,6 +10,8 @@ serialport.on 'open', ->
   serialport.write 'WHO AM I?\n', (err, results) ->
 
 Mqtt = require 'mqtt'
+#mqtt = Mqtt.connect 'mqtt://mqtt.sh.cvut.cz'
+#mqtt = Mqtt.connect 'mqtt://mqtt.siliconhill.cz'
 mqtt = Mqtt.connect 'mqtt://test.mosquitto.org'
 
 mqtt.on 'connect', ->
