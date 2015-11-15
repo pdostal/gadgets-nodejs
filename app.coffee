@@ -2,7 +2,8 @@ moment = require 'moment'
 
 SerialPort = require 'serialport'
 Serialport = SerialPort.SerialPort
-serialport = new Serialport '/dev/ttyUSB0',
+serialpath = process.env.serialpath || '/dev/ttyUSB0'
+serialport = new Serialport serialpath,
   baudrate: 57600
   parser: SerialPort.parsers.readline '\n'
 
