@@ -8,9 +8,9 @@
     "url": "git://github.com/pdostal/serial2mqtt.git"
   },
   "dependencies": {
-    "serialport": "1.7.4",
-    "moment": "2.10.6",
-    "mqtt": "1.4.1"
+    "serialport": "4.0.1",
+    "moment": "2.14.1",
+    "mqtt": "1.13.0"
   },
   "engines": {
     "node": ">= 0.12.0"
